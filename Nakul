@@ -1,0 +1,125 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 5   // Maximum number of orders
+
+// Structure for queue
+typedef struct {
+    char order[MAX][30]; // to store order names
+    int front, rear;
+} Queue;
+
+// Initialize queue
+void init(Queue *q) {
+    q->front = -1;
+    q->rear = -1;
+}
+
+// Check if queue is full
+int isFull(Queue *q) {
+    return ((q->rear + 1) % MAX == q->front);
+}
+
+// Check if queue is empty
+int isEmpty(Queue *q) {
+    return (q->front == -1);
+}
+
+// Add job (order) to queue
+void addOrder(Queue *q, char item[]) {
+    if (isFull(q)) {
+        printf("\nQueue is FULL! Cannot accept more orders now.\n");
+        return;
+    }
+
+    if (isEmpty(q)) {
+        q->front = q->rear = 0;
+    } else {
+        q->rear = (q->rear + 1) % MAX;
+    }
+
+    strcpy(q->order[q->rear], item);
+    printf("\nOrder '%s' added successfully.\n", item);
+}
+
+// Delete job (serve order) from queue
+void serveOrder(Queue *q) {
+    if (isEmpty(q)) {
+        printf("\nNo orders to serve. Queue is EMPTY!\n");
+        return;
+    }
+
+    printf("\nOrder '%s' has been served.\n", q->order[q->front]);
+
+    if (q->front == q->rear) {
+        // Only one element
+        q->front = q->rear = -1;
+    } else {
+        q->front = (q->front + 1) % MAX;
+    }
+}
+
+// Display current queue
+void display(Queue *q) {
+    if (isEmpty(q)) {
+        printf("\nNo pending orders.\n");
+        return;
+    }
+
+    printf("\nCurrent Orders in Queue:\n");
+    printf("----------------------------\n");
+
+    int i = q->front;
+    while (1) {
+        printf("%s\n", q->order[i]);
+        if (i == q->rear)
+            break;
+        i = (i + 1) % MAX;
+    }
+}
+
+// MAIN FUNCTION
+int main() {
+    Queue q;
+    init(&q);
+    int choice;
+    char item[30];
+
+    printf("=== Pizza Parlor Job Queue Simulation ===\n");
+
+    do {
+        printf("\n1. Add Order\n");
+        printf("2. Serve Order\n");
+        printf("3. Display Orders\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter order name: ");
+                scanf("%s", item);
+                addOrder(&q, item);
+                break;
+
+            case 2:
+                serveOrder(&q);
+                break;
+
+            case 3:
+                display(&q);
+                break;
+
+            case 4:
+                printf("\nExiting... Thank you!\n");
+                break;
+
+            default:
+                printf("\nInvalid choice! Try again.\n");
+        }
+
+    } while (choice != 4);
+
+    return 0;
+}
