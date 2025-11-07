@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX 5
+int queue[MAX], front = -1, rear = -1;
+
+void addJob(int job) {
+    if (rear == MAX - 1)
+        printf("Queue is full!\n");
+    else {
+        if (front == -1) front = 0;
+        queue[++rear] = job;
+        printf("Order %d added.\n", job);
+    }
+}
+
+void deleteJob() {
+    if (front == -1 || front > rear)
+        printf("Queue is empty!\n");
+    else
+        printf("Order %d served.\n", queue[front++]);
+    if (front > rear) front = rear = -1; // Reset after last order
+}
+
+void displayQueue() {
+    if (front == -1) printf("Queue is empty.\n");
+    else {
+        printf("Orders in queue: ");
+        for (int i = front; i <= rear; i++) printf("%d ", queue[i]);
+        printf("\n");
+    }
+}
+
+int main() {
+    int choice, job;
+    printf("=== Pizza Parlor Job Queue ===\n");
+    while (1) {
+        printf("\n1. Add Order\n2. Serve Order\n3. Display Orders\n4. Exit\nEnter choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1: printf("Enter Order Number: "); scanf("%d", &job); addJob(job); break;
+            case 2: deleteJob(); break;
+            case 3: displayQueue(); break;
+            case 4: printf("Exiting... Thank you!\n"); exit(0);
+            default: printf("Invalid choice!\n");
+        }
+    }
+    return 0;
+}
